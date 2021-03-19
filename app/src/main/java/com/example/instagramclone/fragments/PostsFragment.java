@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,9 +17,13 @@ import android.view.ViewGroup;
 import com.example.instagramclone.Post;
 import com.example.instagramclone.PostAdapter;
 import com.example.instagramclone.R;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,9 @@ public class PostsFragment extends Fragment {
     private RecyclerView rvPosts;
     protected PostAdapter adapter;
     protected List<Post>allPosts;
+
+    private SwipeRefreshLayout swipeContainer;
+
     public PostsFragment() {
         // Required empty public constructor
     }
@@ -49,7 +57,31 @@ public class PostsFragment extends Fragment {
         rvPosts.setAdapter(adapter);
         rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
         queryPosts();
+
+        swipeContainer = view.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(() -> {
+            // Your code to refresh the list here.
+            // Make sure you call swipeContainer.setRefreshing(false)
+            // once the network request has completed successfully.
+            fetchTimelineAsync(0);
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
     }
+
+    public void fetchTimelineAsync(int page) {
+
+        // Remember to CLEAR OUT old items before appending in the new ones
+        adapter.clear();
+        // ...the data has come back, add new items to your adapter...
+        queryPosts();
+        // Now we call setRefreshing(false) to signal refresh has finished
+        swipeContainer.setRefreshing(false);
+        };
 
     protected void queryPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);

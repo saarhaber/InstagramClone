@@ -1,8 +1,19 @@
 package com.example.instagramclone.fragments;
 
+import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.Glide;
 import com.example.instagramclone.Post;
+import com.example.instagramclone.R;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -38,4 +49,5 @@ public class ProfileFragment extends PostsFragment {
         });
 
     }
+
 }

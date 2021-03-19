@@ -1,6 +1,8 @@
 package com.example.instagramclone;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
     private Context context;
     private List<Post> posts;
+
+    public void clear() {
+        posts.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Post> list) {
+        posts.addAll(list);
+        notifyDataSetChanged();
+    }
 
     public PostAdapter(Context context, List<Post> posts) {
         this.context = context;
@@ -57,8 +70,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         }
 
         public void bind(Post post) {
-            tvDescription.setText(post.getDescription());
-            tvUsername.setText(post.getUser().getUsername());
+            tvUsername.setText(post.getUser().getUsername().toLowerCase());
+            tvUsername.setTypeface(null, Typeface.BOLD);
+            String sourceString = "<b>" + tvUsername.getText() + "</b> " + post.getDescription();
+            tvDescription.setText(Html.fromHtml(sourceString));
             ParseFile image = post.getImage();
             if (image!=null) {
                 Glide.with(context).load(post.getImage().getUrl()).into(ivImage);
